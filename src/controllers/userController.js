@@ -1,4 +1,6 @@
-
+const express = require("express");
+const User = require("../models/users");
+require("../db/mongoose");
 
 const userController = {
 	async createUser(request, response) {
@@ -42,7 +44,7 @@ const userController = {
 				data: users,
 			});
 		} catch (error) {
-			response.status(500).send({
+			response.status(400).send({
 				success: false,
 				message: `Error reading users: ${error}`,
 				data: null,
@@ -65,13 +67,72 @@ const userController = {
 				data: user,
 			});
 		} catch (error) {
-			response.status(500).send({
+			response.status(400).send({
 				success: false,
 				message: `Error reading users: ${error}`,
 				data: null,
 			});
 		}
 	},
+	async updateUserById(request, response) { // mongoose ignores non-existent properties when trying to update
+		try {
+			const updProps = Object.keys(request.body);
+			const modelProps = ["name", "email", "password", "age"];
+			const updIsValid = updProps.every((prop) => modelProps.includes(prop));
+			if (!updIsValid) {
+				return response.status(409).send({
+					success: false,
+					message: `Update properties are invalid.`,
+					data: null,
+				});
+			}
+			const user = await User.findByIdAndUpdate(request.params.id, request.body, {
+				new: true, // returns new updated data instead of original that was found
+				runValidators: true,
+			});
+			if (!user) {
+				return response.status(404).send({
+					success: false,
+					message: `User not found.`,
+					data: null,
+				});
+			}
+			response.status(200).send({
+				success: true,
+				message: `User updated successfully.`,
+				data: user,
+			});
+		} catch (error) {
+			response.status(400).send({
+				success: false,
+				message: `Error reading user: ${error}`,
+				data: null,
+			});
+		}
+	},
+	async deleteUserById(request, response) {
+		try {
+			const user = await User.findByIdAndDelete(request.params.id);
+			if (!user) {
+				return response.status(404).send({
+					success: false,
+					message: "User not found.",
+					data: null,
+				});
+			}
+			response.status(200).send({
+				success: true,
+				message: "User deleted successfully.",
+				data: user,
+			});
+		} catch (error) {
+			response.status(400).send({
+				success: false,
+				message: `Error reading user: ${error}`,
+				data: null,
+			});
+		}
+	}
 };
 
 module.exports = userController;
