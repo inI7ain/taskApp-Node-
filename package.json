@@ -1,0 +1,25 @@
+{
+  "name": "taskapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dbStartWwork": "/code/mongoDB/bin/mongod.exe --dbpath=/code/mongoDB-data",
+    "dbStartHome": "C:/Program Files/MongoDB/Server/5.0/bin/mongod.exe --dbpath='F:/FilesProgramming/repos/nodeJS/MongoDB-Data'",
+    "start": "node src/index.js",
+    "startDev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "mongodb": "^4.3.1",
+    "mongoose": "^6.2.0",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
