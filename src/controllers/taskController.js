@@ -63,7 +63,9 @@ const taskController = {
 		try {
 			const updFields = Object.keys(request.body);
 			const modelFields = ["description", "completed"];
-			const updIsValid = updFields.every((prop) => modelFields.includes(prop));
+			const updIsValid = updFields.every((prop) =>
+				modelFields.includes(prop)
+			);
 			if (!updIsValid) {
 				response.status(409).send({
 					success: false,
@@ -71,10 +73,9 @@ const taskController = {
 					data: null,
 				});
 			}
-			const task = await Task.findByIdAndUpdate(request.params.id, request.body, {
-				new: true,
-				runValidators: true,
-			});
+			const task = await Task.findById(request.params.id);
+			updFields.forEach((prop) => task[prop] = request.body[prop]);
+			await task.save();
 			if (!task) {
 				response.status(404).send({
 					success: false,
@@ -108,8 +109,8 @@ const taskController = {
 			response.status(200).send({
 				success: true,
 				message: "Task deleted successfully.",
-				data: task
-			})
+				data: task,
+			});
 		} catch (error) {
 			response.status(500).send({
 				success: false,
@@ -117,7 +118,7 @@ const taskController = {
 				data: null,
 			});
 		}
-	}
-}
+	},
+};
 
 module.exports = taskController;
