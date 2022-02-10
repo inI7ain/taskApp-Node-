@@ -6,20 +6,26 @@ const userController = {
 	async createUser(request, response) {
 		try {
 			const user = new User(request.body);
+			const token = await user.generateAuthToken();
+			user.tokens.concat({ token });
+
 			await user.save();
 			response.status(201).send({
 				success: true,
 				message: "User created successfully.",
-				data: user,
+				data: {
+					user,
+					token,
+				},
 			});
 		} catch (error) {
 			response.status(400).send({
 				success: false,
-				message: `User creation error: ${error}`,
+				message: `User creation error ${error.message}`,
 				data: null,
 			});
 		}
-		/* Promise chaining version
+		/* Promise chaining version (old)
 		 const user = new User(request.body).save().then((user) => {
 			response.status(201).send({
 				success: true,
@@ -39,11 +45,14 @@ const userController = {
 		try {
 			const user = await User.findByCredentials(request.body.email, request.body.password);
 			// this will call the method defined on userSchema.statics in models
-			const token = awaituser.generateAuthToken();
+			const token = await user.generateAuthToken();
 			response.status(200).send({
 				success: true,
 				message: `Login successful. Welcome ${user.name}!`,
-				data: null
+				data: {
+					user,
+					token,
+				}
 			})
 		} catch (error) {
 			response.status(401).send({
@@ -52,6 +61,9 @@ const userController = {
 				data: null,
 			});
 		}
+	},
+	async logoutUser(request, response) {
+
 	},
 	async readAllUsers(request, response) {
 		try {
@@ -91,6 +103,9 @@ const userController = {
 				data: null,
 			});
 		}
+	},
+	async readUserProfile(request, response) {
+		response.status(200).send(request.user);
 	},
 	async updateUserById(request, response) {
 		// mongoose ignores non-existent properties when trying to update

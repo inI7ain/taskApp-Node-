@@ -1,6 +1,7 @@
 const validator = require("validator");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // schema for database collection
 const userSchema = new mongoose.Schema({
@@ -49,11 +50,33 @@ const userSchema = new mongoose.Schema({
 			}
 		},
 	},
+	tokens: [{
+		token: {
+			type: String, // this must be provided
+			required: true,
+		}
+	}],
 });
 
-userSchema.methods.
+// run middleware on specified event
+userSchema.pre('save', async function(next) { 
+	const user = this; // must be a standard fn because of this binding
+	if (user.isModified('password')) {
+		user.password = await bcrypt.hash(user.password, 8);
+	}
+	next(); // hangs forever until next is calledd
+});
 
-userSchema.statics.findByCredentials = async function (email, password) {
+userSchema.methods.generateAuthToken = async function () { // methods are available in your instances
+	const user = this;
+	const token = jwt.sign({ _id: user._id.toString() }, "superSecretMessage"); // secet message for decoding
+	user.tokens = user.tokens.concat({ token }); // add user's token to tokens array
+
+	await user.save();
+	return token;
+}
+
+userSchema.statics.findByCredentials = async function (email, password) { // static methods are available on the model
 	const user = await User.findOne({ email });
 
 	if (!user) {
@@ -66,15 +89,6 @@ userSchema.statics.findByCredentials = async function (email, password) {
 	}
 	return user;
 }
-
-// run middleware on specified event
-userSchema.pre('save', async function(next) { 
-	const user = this; // must be a standard fn because of this binding
-	if (user.isModified('password')) {
-		user.password = await bcrypt.hash(user.password, 8);
-	}
-	next(); // hangs forever until next is calledd
-});
 
 // collection modelling
 const User = mongoose.model("User", userSchema);
