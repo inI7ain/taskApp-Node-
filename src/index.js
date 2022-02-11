@@ -32,16 +32,3 @@ server.listen(port, () => {
 	console.log(`Server is up and running on port: ${port}`);
 });
 
-// Without middleware: new request => run route handler
-// With middleware: new request => do something (authenticate) => run route handler
-
-async function jwtTest() {
-	const token = jwt.sign(
-		{ _id: "id12345" } /* data embedded in token */,
-		"superSecretMessage", // secret sign of token to preven alteration
-		{ expiresIn: '7 days' }
-	);
-	const payLoad = jwt.verify(token, "superSecretMessage");
-}
-
-jwtTest();

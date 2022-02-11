@@ -5,10 +5,14 @@ const authenticate = require("../middlewares/authenticate");
 
 const userRouter = new express.Router();
 
-// Authentication
+// Without middleware: new request => run route handler
+// With middleware: new request => do something (authenticate) => run route handler
+
+// User authentication
 userRouter.post("/users/create", userController.createUser);
 userRouter.post("/users/login", userController.loginUser);
 userRouter.post("/users/logout", authenticate, userController.logoutUser);
+userRouter.post("/users/logoutAll", authenticate, userController.logoutAll);
 
 // Data retrievals
 userRouter.get("/users/read", userController.readAllUsers);

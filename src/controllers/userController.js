@@ -19,7 +19,7 @@ const userController = {
 				},
 			});
 		} catch (error) {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `User creation error ${error.message}`,
 				data: null,
@@ -33,7 +33,7 @@ const userController = {
 				data: user,
 			});
 		}).catch((error) => {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `User creation error: ${error}`,
 				data: null,
@@ -43,7 +43,10 @@ const userController = {
 	},
 	async loginUser(request, response) {
 		try {
-			const user = await User.findByCredentials(request.body.email, request.body.password);
+			const user = await User.findByCredentials(
+				request.body.email,
+				request.body.password
+			);
 			// this will call the method defined on userSchema.statics in models
 			const token = await user.generateAuthToken();
 			response.status(200).send({
@@ -52,8 +55,8 @@ const userController = {
 				data: {
 					user,
 					token,
-				}
-			})
+				},
+			});
 		} catch (error) {
 			response.status(401).send({
 				success: false,
@@ -63,7 +66,40 @@ const userController = {
 		}
 	},
 	async logoutUser(request, response) {
-
+		try {
+			request.user.tokens = request.user.tokens.filter((token) => {
+				return token.token !== request.token;
+			});
+			await request.user.save();
+			response.status(200).send({
+				success: true,
+				message: `Logout successful. See you ${request.user.name}!`,
+				data: null,
+			});
+		} catch (error) {
+			response.status(500).send({
+				success: false,
+				message: `Logout error: ${error}`,
+				data: null,
+			});
+		}
+	},
+	async logoutAll(request, response) {
+		try {
+			request.user.tokens = [];
+			await request.user.save();
+			response.status(200).send({
+				success: true,
+				message: `Logged out from all sessions. See you ${request.user.name}!`,
+				data: null,
+			});
+		} catch (error) {
+			response.status(500).send({
+				success: false,
+				message: `Logout error: ${error}`,
+				data: null,
+			});		
+		}
 	},
 	async readAllUsers(request, response) {
 		try {
@@ -74,7 +110,7 @@ const userController = {
 				data: users,
 			});
 		} catch (error) {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `Error reading users: ${error}`,
 				data: null,
@@ -97,7 +133,7 @@ const userController = {
 				data: user,
 			});
 		} catch (error) {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `Error reading users: ${error}`,
 				data: null,
@@ -123,7 +159,7 @@ const userController = {
 				});
 			}
 			const user = await User.findById(request.params.id);
-			updProps.forEach((prop) => user[prop] = request.body[prop]);
+			updProps.forEach((prop) => (user[prop] = request.body[prop]));
 			await user.save();
 			/* const user = await User.findByIdAndUpdate(
 				request.params.id,
@@ -146,7 +182,7 @@ const userController = {
 				data: user,
 			});
 		} catch (error) {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `Error reading user: ${error}`,
 				data: null,
@@ -169,7 +205,7 @@ const userController = {
 				data: user,
 			});
 		} catch (error) {
-			response.status(400).send({
+			response.status(500).send({
 				success: false,
 				message: `Error reading user: ${error}`,
 				data: null,

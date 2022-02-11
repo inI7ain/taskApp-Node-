@@ -67,7 +67,8 @@ userSchema.pre('save', async function(next) {
 	next(); // hangs forever until next is calledd
 });
 
-userSchema.methods.generateAuthToken = async function () { // methods are available in your instances
+// methods are available in your instances
+userSchema.methods.generateAuthToken = async function () { 
 	const user = this;
 	const token = jwt.sign({ _id: user._id.toString() }, "superSecretMessage"); // secet message for decoding
 	user.tokens = user.tokens.concat({ token }); // add user's token to tokens array
@@ -76,7 +77,18 @@ userSchema.methods.generateAuthToken = async function () { // methods are availa
 	return token;
 }
 
-userSchema.statics.findByCredentials = async function (email, password) { // static methods are available on the model
+userSchema.methods.toJSON = function () {
+	const user = this;
+	const publicUser = user.toObject();
+	delete publicUser.password;
+	delete publicUser.tokens;
+	return { ...publicUser };
+}
+
+
+
+// static methods are available on the model
+userSchema.statics.findByCredentials = async function (email, password) {
 	const user = await User.findOne({ email });
 
 	if (!user) {

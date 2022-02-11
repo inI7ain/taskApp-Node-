@@ -16,7 +16,8 @@ async function authenticate(request, response, next) {
 
 		request.token = token;
 		request.user = user;
-		console.log("Request approved."); 
+		console.log("Request approved.");
+		// all data is forwarded to route handler (user)
 		next();
 	} catch (error) {
 		response.status(401).send({ error: "Authentication required." });
