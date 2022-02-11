@@ -143,8 +143,16 @@ const userController = {
 	async readUserProfile(request, response) {
 		response.status(200).send(request.user);
 	},
-	async updateUserById(request, response) {
+	async updateUserProfile(request, response) {
 		// mongoose ignores non-existent properties when trying to update
+		/* const user = await User.findByIdAndUpdate(
+			request.params.id,
+			request.body,
+			{
+				new: true, // returns new updated data instead of original that was found
+				runValidators: true,
+			}
+		); */ // unfortunately this way mongoose and its middlewares gets bypassed
 		try {
 			const updProps = Object.keys(request.body);
 			const modelProps = ["name", "email", "password", "age"];
@@ -158,28 +166,19 @@ const userController = {
 					data: null,
 				});
 			}
-			const user = await User.findById(request.params.id);
-			updProps.forEach((prop) => (user[prop] = request.body[prop]));
-			await user.save();
-			/* const user = await User.findByIdAndUpdate(
-				request.params.id,
-				request.body,
-				{
-					new: true, // returns new updated data instead of original that was found
-					runValidators: true,
-				}
-			); */ // this way mongoose and its middlewares gets bypassed
-			if (!user) {
+			updProps.forEach((prop) => (request.user[prop] = request.body[prop]));
+			await request.user.save();
+			if (!request.user) { // should only happen in theory
 				return response.status(404).send({
 					success: false,
-					message: `User not found.`,
+					message: `User invalid.`,
 					data: null,
 				});
 			}
 			response.status(200).send({
 				success: true,
 				message: `User updated successfully.`,
-				data: user,
+				data: request.user,
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -189,20 +188,13 @@ const userController = {
 			});
 		}
 	},
-	async deleteUserById(request, response) {
+	async deleteUserProfile(request, response) {
 		try {
-			const user = await User.findByIdAndDelete(request.params.id);
-			if (!user) {
-				return response.status(404).send({
-					success: false,
-					message: "User not found.",
-					data: null,
-				});
-			}
+			await request.user.remove();
 			response.status(200).send({
 				success: true,
 				message: "User deleted successfully.",
-				data: user,
+				data: request.user,
 			});
 		} catch (error) {
 			response.status(500).send({

@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const Task = require("../models/tasks");
+const { request } = require("express");
+
 // schema for database collection
 const userSchema = new mongoose.Schema({
 	name: {
@@ -58,13 +61,26 @@ const userSchema = new mongoose.Schema({
 	}],
 });
 
-// run middleware on specified event
-userSchema.pre('save', async function(next) { 
+userSchema.virtual("tasks", /* <- virtual prop name */ {
+	ref: "Task", // creates reference to Task model
+	localField: "_id",
+	foreignField: "ownerId",
+})
+
+// run middleware on specified event (password hash)
+userSchema.pre("save", async function(next) { 
 	const user = this; // must be a standard fn because of this binding
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8);
 	}
-	next(); // hangs forever until next is calledd
+	next(); // process hangs forever until next is calledd
+});
+
+// wipe associated tasks upon user deletion
+userSchema.pre("remove", async function (request, response, next) {
+	const user = this;
+	await Task.deleteMany({ ownerId: user._id });
+	next();
 });
 
 // methods are available in your instances
@@ -84,7 +100,6 @@ userSchema.methods.toJSON = function () {
 	delete publicUser.tokens;
 	return { ...publicUser };
 }
-
 
 
 // static methods are available on the model

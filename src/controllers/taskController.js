@@ -5,7 +5,10 @@ require("../db/mongoose");
 const taskController = {
 	async createTask(request, response) {
 		try {
-			const task = new Task(request.body);
+			const task = new Task({
+				...request.body,
+				ownerId: request.user._id,
+			});
 			await task.save();
 			response.status(201).send({
 				success: true,
@@ -22,11 +25,11 @@ const taskController = {
 	},
 	async readAllTasks(request, response) {
 		try {
-			const tasks = await Task.find({});
+			await request.user.populate("tasks");
 			response.status(200).send({
 				success: true,
 				message: "Data retrieved successfully.",
-				data: tasks,
+				data: request.user.tasks,
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -38,7 +41,11 @@ const taskController = {
 	},
 	async readTaskById(request, response) {
 		try {
-			const task = await Task.findById(request.params.id);
+			const task = await Task.findOne({
+				_id: request.params.id,
+				ownerId: request.user._id,
+			});
+			console.log(task);
 			if (!task) {
 				return response.status(404).send({
 					success: false,
@@ -73,9 +80,10 @@ const taskController = {
 					data: null,
 				});
 			}
-			const task = await Task.findById(request.params.id);
-			updFields.forEach((prop) => task[prop] = request.body[prop]);
-			await task.save();
+			const task = await Task.findOne({
+				_id: request.params.id,
+				ownerId: request.user._id,
+			});
 			if (!task) {
 				response.status(404).send({
 					success: false,
@@ -83,8 +91,10 @@ const taskController = {
 					data: null,
 				});
 			}
+			updFields.forEach((prop) => (task[prop] = request.body[prop]));
+			await task.save();
 			response.status(200).send({
-				success: false,
+				success: true,
 				message: `Task updated successfully.`,
 				data: task,
 			});
@@ -98,7 +108,10 @@ const taskController = {
 	},
 	async deleteTaskById(request, response) {
 		try {
-			const task = await Task.findByIdAndDelete(request.params.id);
+			const task = await Task.findOneAndDelete({
+				_id: request.params.id,
+				ownerId: request.user._id,
+			});
 			if (!task) {
 				return response.status(404).send({
 					success: false,

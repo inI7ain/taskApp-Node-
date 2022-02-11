@@ -18,13 +18,13 @@ userRouter.post("/users/logoutAll", authenticate, userController.logoutAll);
 userRouter.get("/users/read", userController.readAllUsers);
 // userRouter.get("/users/read/:id", userController.readUserById);
 userRouter.get(
-	"/users/read/profile",
+	"/users/readProfile",
 	authenticate,
 	userController.readUserProfile
 );
 
 // Data maintenance & removals
-userRouter.patch("/users/update/:id", userController.updateUserById);
-userRouter.delete("/users/delete/:id", userController.deleteUserById);
+userRouter.patch("/users/updateProfile", authenticate, userController.updateUserProfile);
+userRouter.delete("/users/deleteProfile", authenticate, userController.deleteUserProfile);
 
 module.exports = userRouter;
