@@ -59,6 +59,8 @@ const userSchema = new mongoose.Schema({
 			required: true,
 		}
 	}],
+}, { // additional options
+	timestamps: true,
 });
 
 userSchema.virtual("tasks", /* <- virtual prop name */ {

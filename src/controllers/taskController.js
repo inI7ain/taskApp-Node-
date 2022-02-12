@@ -24,8 +24,31 @@ const taskController = {
 		}
 	},
 	async readAllTasks(request, response) {
+		/*	Query string options 
+			/tasks/read?comleted=boolean
+			/tasks/read?limit=number
+			/tasks/read?skip=number
+			/tasks/read?sortBy=sortField_orderDirection
+		*/
 		try {
-			await request.user.populate("tasks");
+			const match = {};
+			if (request.query.completed) {
+				match.completed = request.query.completed.toLowerCase() === "true";
+			}
+			const sort = {};
+			if (request.query.sortBy) {
+				const qStrParts = request.query.sortBy.split("_");
+				sort[qStrParts[0]] = qStrParts[1] === "desc" ? -1 : 1;
+			}
+			await request.user.populate({
+				path: "tasks",
+				match,
+				options: {
+					limit: Number(request.query.limit), // used for pagination, ignored if NaN
+					skip: Number(request.query.skip),
+					sort,
+				},
+			});
 			response.status(200).send({
 				success: true,
 				message: "Data retrieved successfully.",

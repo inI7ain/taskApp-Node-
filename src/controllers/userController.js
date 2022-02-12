@@ -1,4 +1,3 @@
-const express = require("express");
 const User = require("../models/users");
 require("../db/mongoose");
 
@@ -117,29 +116,6 @@ const userController = {
 			});
 		}
 	},
-	async readUserById(request, response) {
-		try {
-			const user = await User.findById(request.params.id);
-			if (!user) {
-				return response.status(404).send({
-					success: false,
-					message: "User not found.",
-					data: null,
-				});
-			}
-			response.status(200).send({
-				success: true,
-				message: `Data retrieved successfully.`,
-				data: user,
-			});
-		} catch (error) {
-			response.status(500).send({
-				success: false,
-				message: `Error reading users: ${error}`,
-				data: null,
-			});
-		}
-	},
 	async readUserProfile(request, response) {
 		response.status(200).send(request.user);
 	},
@@ -203,6 +179,9 @@ const userController = {
 				data: null,
 			});
 		}
+	},
+	async uploadAvatar(request, response) {
+		response.status(200).send();
 	},
 };
 
