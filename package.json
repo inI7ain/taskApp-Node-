@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dbStartWwork": "/code/mongoDB/bin/mongod.exe --dbpath=/code/mongoDB-data",
@@ -23,6 +24,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "eslint": "^8.9.0",
     "nodemon": "^2.0.15"
   }
 }

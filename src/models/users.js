@@ -1,10 +1,16 @@
-const validator = require("validator");
+/* const validator = require("validator");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); */
 
-const Task = require("../models/tasks");
-const { request } = require("express");
+import validator from "validator";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import * as jwt from "jsonwebtoken";
+
+// const Task = require("../models/tasks");
+
+import Task from "./tasks.js";
 
 // schema for database collection
 const userSchema = new mongoose.Schema({
@@ -122,4 +128,4 @@ userSchema.statics.findByCredentials = async function (email, password) {
 // collection modelling
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

@@ -1,6 +1,11 @@
-const express = require("express");
+/* const express = require("express");
 const Task = require("../models/tasks");
-require("../db/mongoose");
+require("../db/mongoose"); */
+
+import express from "express";
+import Task from "../models/tasks.js";
+import * as mongoose from "../db/mongoose.js";
+
 
 const taskController = {
 	async createTask(request, response) {
@@ -157,4 +162,4 @@ const taskController = {
 	},
 };
 
-module.exports = taskController;
+export default taskController;

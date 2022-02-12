@@ -1,5 +1,5 @@
-const User = require("../models/users");
-require("../db/mongoose");
+import User from "../models/users.js";
+import mongoose from "mongoose";
 
 const userController = {
 	async createUser(request, response) {
@@ -25,7 +25,7 @@ const userController = {
 			});
 		}
 		/* Promise chaining version (old)
-		 const user = new User(request.body).save().then((user) => {
+		const user = new User(request.body).save().then((user) => {
 			response.status(201).send({
 				success: true,
 				message: "User created successfully.",
@@ -97,7 +97,7 @@ const userController = {
 				success: false,
 				message: `Logout error: ${error}`,
 				data: null,
-			});		
+			});
 		}
 	},
 	async readAllUsers(request, response) {
@@ -142,9 +142,12 @@ const userController = {
 					data: null,
 				});
 			}
-			updProps.forEach((prop) => (request.user[prop] = request.body[prop]));
+			updProps.forEach(
+				(prop) => (request.user[prop] = request.body[prop])
+			);
 			await request.user.save();
-			if (!request.user) { // should only happen in theory
+			if (!request.user) {
+				// should only happen in theory
 				return response.status(404).send({
 					success: false,
 					message: `User invalid.`,
@@ -185,4 +188,4 @@ const userController = {
 	},
 };
 
-module.exports = userController;
+export default  userController;

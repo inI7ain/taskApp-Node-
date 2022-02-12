@@ -1,20 +1,25 @@
-const express = require("express");
-const multer = require("multer");
+/* const express = require("express");
+const multer = require("multer"); */
+import express from "express";
+import multer from "multer";
 
-const userController = require("../controllers/userController");
-const authenticate = require("../middlewares/authenticate");
+/* const userController = require("../controllers/userController");
+const authenticate = require("../middlewares/authenticate"); */
+
+import userController from "../controllers/userController.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const userRouter = new express.Router();
-const uploadDir = multer({
+const upload = multer({
 	dest: "src/avatars", // specify upload directory
 	limits: {
 		fileSize: 1000000, // in bytes
 	},
 	fileFilter(request, file, callback) {
-		if (!file.originalname.match(/\.(doc|docx)$/)) {
-			return callback("Please upload a document.");
+		if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+			return callback("Only jpg, jpeg and png format is accepted.");
 		}
-		callback(undefined, true);
+		callback(undefined, true); // resolve
 	},
 });
 
@@ -29,6 +34,7 @@ userRouter.post("/users/logoutAll", authenticate, userController.logoutAll);
 
 // Data retrieval
 userRouter.get("/users/read", userController.readAllUsers);
+
 userRouter.get(
 	"/users/readProfile",
 	authenticate,
@@ -36,10 +42,23 @@ userRouter.get(
 );
 
 // Data managemenet
-userRouter.patch("/users/updateProfile", authenticate, userController.updateUserProfile);
-userRouter.delete("/users/deleteProfile", authenticate, userController.deleteUserProfile);
-userRouter.post("/users/uploadAvatar", uploadDir.single("avatar"), userController.uploadAvatar);
-// multer's single method specifies the key to look for in form-data
+userRouter.patch(
+	"/users/updateProfile",
+	authenticate,
+	userController.updateUserProfile
+);
+userRouter.delete(
+	"/users/deleteProfile",
+	authenticate,
+	userController.deleteUserProfile
+);
+userRouter.post(
+	"/users/uploadAvatar",
+	upload.single("avatar"),
+	userController.uploadAvatar,
+	(error, request, response, next) => {
+		response.status(400).send({ error });
+	}
+);
 
-
-module.exports = userRouter;
+export default userRouter;
