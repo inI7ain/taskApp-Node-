@@ -187,8 +187,8 @@ const userController = {
 		}
 	},
 	async uploadAvatar(request, response) {
-		response.status(200).send();
 		if (request.file) {
+			console.log(request.user);
 			request.user.avatar = request.file.buffer;
 			await request.user.save();
 			return response.status(200).send();

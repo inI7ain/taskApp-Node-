@@ -1,5 +1,3 @@
-const express = require("express");
-
 const Task = require("../models/tasks");
 require("../db/mongoose");
 
@@ -74,7 +72,6 @@ const taskController = {
 				_id: request.params.id,
 				ownerId: request.user._id,
 			});
-			console.log(task);
 			if (!task) {
 				return response.status(404).send({
 					success: false,

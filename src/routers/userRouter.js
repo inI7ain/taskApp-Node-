@@ -11,9 +11,9 @@ import authenticate from "../middlewares/authenticate.js"; */
 
 const userRouter = new express.Router();
 const upload = multer({
-	dest: "src/avatars", // specify upload directory
+	// dest: "src/avatars", // specify upload directory (file is passed to next if omitted)
 	limits: {
-		fileSize: 1000000, // in bytes
+		fileSize: 10000000, // in bytes
 	},
 	fileFilter(request, file, callback) {
 		if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
