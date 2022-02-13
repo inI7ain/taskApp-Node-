@@ -1,13 +1,13 @@
-/* const express = require("express");
-const multer = require("multer"); */
-import express from "express";
+const express = require("express");
+const multer = require("multer");
+
+const userController = require("../controllers/userController");
+const authenticate = require("../middlewares/authenticate");
+
+/* import express from "express";
 import multer from "multer";
-
-/* const userController = require("../controllers/userController");
-const authenticate = require("../middlewares/authenticate"); */
-
 import userController from "../controllers/userController.js";
-import authenticate from "../middlewares/authenticate.js";
+import authenticate from "../middlewares/authenticate.js"; */
 
 const userRouter = new express.Router();
 const upload = multer({
@@ -61,4 +61,4 @@ userRouter.post(
 	}
 );
 
-export default userRouter;
+module.exports = userRouter;

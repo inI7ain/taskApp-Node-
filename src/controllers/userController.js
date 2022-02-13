@@ -1,5 +1,8 @@
-import User from "../models/users.js";
-import mongoose from "mongoose";
+const User = require("../models/users");
+require("../db/mongoose");
+
+/* import User from "../models/users.js";
+import mongoose from "mongoose"; */
 
 const userController = {
 	async createUser(request, response) {
@@ -185,7 +188,15 @@ const userController = {
 	},
 	async uploadAvatar(request, response) {
 		response.status(200).send();
+		if (request.file) {
+			request.user.avatar = request.file.buffer;
+			await request.user.save();
+			return response.status(200).send();
+		}
+		response.status(400).send({
+			error: "File size too large or otherwise invalid."
+		});
 	},
 };
 
-export default  userController;
+module.exports =  userController;

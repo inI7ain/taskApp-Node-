@@ -1,10 +1,11 @@
-/* const express = require("express");
-const Task = require("../models/tasks");
-require("../db/mongoose"); */
+const express = require("express");
 
-import express from "express";
+const Task = require("../models/tasks");
+require("../db/mongoose");
+
+/* import express from "express";
 import Task from "../models/tasks.js";
-import * as mongoose from "../db/mongoose.js";
+import * as mongoose from "../db/mongoose.js"; */
 
 
 const taskController = {
@@ -162,4 +163,4 @@ const taskController = {
 	},
 };
 
-export default taskController;
+module.exports = taskController;

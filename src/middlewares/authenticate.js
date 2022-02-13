@@ -1,8 +1,8 @@
-// const jwt = require("jsonwebtoken");
-import * as jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
+const User = require("../models/users");
 
-// const User = require("../models/users");
-import User from "../models/users.js";
+/* import User from "../models/users.js";
+import * as jwt from "jsonwebtoken"; */
 
 async function authenticate(request, response, next) {
 	console.log(`Incoming ${request.method} request on path: ${request.path}`);
@@ -26,4 +26,4 @@ async function authenticate(request, response, next) {
 	}
 }
 
-export default authenticate;
+module.exports = authenticate;

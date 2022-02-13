@@ -1,10 +1,11 @@
-/* const express = require("express");
-const taskController = require("../controllers/taskController");
-const authenticate = require("../middlewares/authenticate"); */
+const express = require("express");
 
-import express from "express";
+const taskController = require("../controllers/taskController");
+const authenticate = require("../middlewares/authenticate");
+
+/* import express from "express";
 import taskController from "../controllers/taskController.js";
-import authenticate from "../middlewares/authenticate.js";
+import authenticate from "../middlewares/authenticate.js"; */
 
 const taskRouter = new express.Router();
 
@@ -15,4 +16,4 @@ taskRouter.get("/tasks/read/:id", authenticate, taskController.readTaskById);
 taskRouter.patch("/tasks/update/:id", authenticate, taskController.updateTaskById);
 taskRouter.delete("/tasks/delete/:id", authenticate, taskController.deleteTaskById);
 
-export default taskRouter;
+module.exports = taskRouter;

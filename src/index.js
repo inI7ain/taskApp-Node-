@@ -1,11 +1,12 @@
-// const express = require("express");
-import express from "express";
+const express = require("express");
 
-/* const userRouter = require("./routers/userRouter");
-const taskRouter = require("./routers/taskRouter"); */
+const userRouter = require("./routers/userRouter");
+const taskRouter = require("./routers/taskRouter");
+
+/* import express from "express";
 import userRouter from "./routers/userRouter.js";
 import taskRouter from "./routers/taskRouter.js";
-
+ */
 const server = express();
 const port = process.env.PORT || 3000;
 
