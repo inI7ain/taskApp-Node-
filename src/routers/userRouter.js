@@ -17,7 +17,9 @@ const upload = multer({
 	},
 	fileFilter(request, file, callback) {
 		if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-			return callback("Only jpg, jpeg and png format is accepted.");
+			return callback(
+				"Only jpg, jpeg and png format is accepted."
+			);
 		}
 		callback(undefined, true); // resolve
 	},
@@ -29,17 +31,25 @@ const upload = multer({
 // User authentication
 userRouter.post("/users/create", userController.createUser);
 userRouter.post("/users/login", userController.loginUser);
-userRouter.post("/users/logout", authenticate, userController.logoutUser);
-userRouter.post("/users/logoutAll", authenticate, userController.logoutAll);
+userRouter.post(
+	"/users/logout",
+	authenticate,
+	userController.logoutUser
+);
+userRouter.post(
+	"/users/logoutAll",
+	authenticate,
+	userController.logoutAll
+);
 
 // Data retrieval
 userRouter.get("/users/read", userController.readAllUsers);
-
 userRouter.get(
 	"/users/readProfile",
 	authenticate,
 	userController.readUserProfile
 );
+userRouter.get("/users/readAvatar/:id", userController.readAvatarById);
 
 // Data managemenet
 userRouter.patch(
@@ -51,14 +61,20 @@ userRouter.delete(
 	"/users/deleteProfile",
 	authenticate,
 	userController.deleteUserProfile
-);
+); 
 userRouter.post(
 	"/users/uploadAvatar",
+	authenticate,
 	upload.single("avatar"),
 	userController.uploadAvatar,
-	(error, request, response, next) => {
+	(error, request, response) => {
 		response.status(400).send({ error });
 	}
+);
+userRouter.delete(
+	"/users/deleteAvatar",
+	authenticate,
+	userController.deleteAvatar
 );
 
 module.exports = userRouter;

@@ -1,7 +1,8 @@
-const User = require("../models/users");
+const User = require("../models/user");
+const sharp = require("sharp");
 require("../db/mongoose");
 
-/* import User from "../models/users.js";
+/* import User from "../models/user.js";
 import mongoose from "mongoose"; */
 
 const userController = {
@@ -24,7 +25,6 @@ const userController = {
 			response.status(500).send({
 				success: false,
 				message: `User creation error ${error.message}`,
-				data: null,
 			});
 		}
 		/* Promise chaining version (old)
@@ -38,7 +38,7 @@ const userController = {
 			response.status(500).send({
 				success: false,
 				message: `User creation error: ${error}`,
-				data: null,
+
 			});
 		}); 
 		*/
@@ -63,26 +63,25 @@ const userController = {
 			response.status(401).send({
 				success: false,
 				message: `Login error: ${error}`,
-				data: null,
 			});
 		}
 	},
 	async logoutUser(request, response) {
 		try {
-			request.user.tokens = request.user.tokens.filter((token) => {
-				return token.token !== request.token;
-			});
+			request.user.tokens = request.user.tokens.filter(
+				(token) => {
+					return token.token !== request.token;
+				}
+			);
 			await request.user.save();
 			response.status(200).send({
 				success: true,
 				message: `Logout successful. See you ${request.user.name}!`,
-				data: null,
 			});
 		} catch (error) {
 			response.status(500).send({
 				success: false,
 				message: `Logout error: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -93,13 +92,11 @@ const userController = {
 			response.status(200).send({
 				success: true,
 				message: `Logged out from all sessions. See you ${request.user.name}!`,
-				data: null,
 			});
 		} catch (error) {
 			response.status(500).send({
 				success: false,
 				message: `Logout error: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -115,7 +112,6 @@ const userController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading users: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -142,7 +138,6 @@ const userController = {
 				return response.status(409).send({
 					success: false,
 					message: `Update properties are invalid.`,
-					data: null,
 				});
 			}
 			updProps.forEach(
@@ -154,7 +149,6 @@ const userController = {
 				return response.status(404).send({
 					success: false,
 					message: `User invalid.`,
-					data: null,
 				});
 			}
 			response.status(200).send({
@@ -166,7 +160,6 @@ const userController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading user: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -182,21 +175,53 @@ const userController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading user: ${error}`,
-				data: null,
 			});
 		}
 	},
 	async uploadAvatar(request, response) {
-		if (request.file) {
-			console.log(request.user);
-			request.user.avatar = request.file.buffer;
+		// multer doesn't throw an exception so trycatch doesn't work here
+		if (request.file.buffer) {
+			request.user.avatar = await sharp(request.file.buffer)
+				.resize({ width: 500, height: 500 })
+				.png()
+				.toBuffer();
 			await request.user.save();
 			return response.status(200).send();
 		}
 		response.status(400).send({
-			error: "File size too large or otherwise invalid."
+			error: "File is too large or otherwise invalid.",
 		});
+	},
+	async readAvatarById(request, response) {
+		try {
+			const user = await User.findById(request.params.id);
+			if (!user || !user.avatar) {
+				throw new Error();
+			}
+			response.set("Content-Type", "image/png");
+			response.status(200).send(user.avatar);
+		} catch (error) {
+			response.status(404).send({
+				success: false,
+				message: `Error reading data: ${error}`,
+			});
+		}
+	},
+	async deleteAvatar(request, response) {
+		try {
+			request.user.avatar = undefined;
+			await request.user.save();
+			response.status(200).send({
+				success: true,
+				message: `Avatar successfully deleted.`,
+			});
+		} catch (error) {
+			response.status(500).send({
+				success: false,
+				message: `Error deleting user data: ${error}`,
+			});
+		}
 	},
 };
 
-module.exports =  userController;
+module.exports = userController;

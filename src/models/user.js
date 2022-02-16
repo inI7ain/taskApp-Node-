@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const Task = require("../models/tasks");
+const Task = require("./task");
 
 /* import validator from "validator";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken"; 
-import Task from "./tasks.js"; */
+import Task from "./task.js"; */
 
 // schema for database collection
 const userSchema = new mongoose.Schema({
@@ -104,10 +104,12 @@ userSchema.methods.generateAuthToken = async function () {
 }
 
 userSchema.methods.toJSON = function () {
+	// hiding sensitive user data
 	const user = this;
 	const publicUser = user.toObject();
 	delete publicUser.password;
 	delete publicUser.tokens;
+	delete publicUser.avatar;
 	return { ...publicUser };
 }
 

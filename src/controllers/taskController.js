@@ -1,8 +1,8 @@
-const Task = require("../models/tasks");
+const Task = require("../models/task");
 require("../db/mongoose");
 
 /* import express from "express";
-import Task from "../models/tasks.js";
+import Task from "../models/task.js";
 import * as mongoose from "../db/mongoose.js"; */
 
 
@@ -23,7 +23,6 @@ const taskController = {
 			response.status(400).send({
 				success: false,
 				message: `Task creation error: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -62,7 +61,6 @@ const taskController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading tasks: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -76,7 +74,7 @@ const taskController = {
 				return response.status(404).send({
 					success: false,
 					message: "Task not found.",
-					data: null,
+
 				});
 			}
 			response.status(200).send({
@@ -88,7 +86,6 @@ const taskController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading tasks: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -103,7 +100,7 @@ const taskController = {
 				response.status(409).send({
 					success: false,
 					message: "Update properties are invalid.",
-					data: null,
+
 				});
 			}
 			const task = await Task.findOne({
@@ -114,7 +111,7 @@ const taskController = {
 				response.status(404).send({
 					success: false,
 					message: `Task not found.`,
-					data: null,
+
 				});
 			}
 			updFields.forEach((prop) => (task[prop] = request.body[prop]));
@@ -128,7 +125,6 @@ const taskController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading users: ${error}`,
-				data: null,
 			});
 		}
 	},
@@ -142,7 +138,7 @@ const taskController = {
 				return response.status(404).send({
 					success: false,
 					message: "Task not found.",
-					data: null,
+
 				});
 			}
 			response.status(200).send({
@@ -154,7 +150,6 @@ const taskController = {
 			response.status(500).send({
 				success: false,
 				message: `Error reading tasks: ${error}`,
-				data: null,
 			});
 		}
 	},
