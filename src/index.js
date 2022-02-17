@@ -8,7 +8,7 @@ import userRouter from "./routers/userRouter.js";
 import taskRouter from "./routers/taskRouter.js";
  */
 const server = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // Maintenance mode
 /* server.use((request, response, next) => { 

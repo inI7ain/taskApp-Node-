@@ -1,5 +1,7 @@
-const User = require("../models/user");
 const sharp = require("sharp");
+
+const User = require("../models/user");
+const mailController = require("./mailController");
 require("../db/mongoose");
 
 /* import User from "../models/user.js";
@@ -11,8 +13,8 @@ const userController = {
 			const user = new User(request.body);
 			const token = await user.generateAuthToken();
 			user.tokens.concat({ token });
-
 			await user.save();
+			mailController.sendWelcomeEmail(user.email, user.name);
 			response.status(201).send({
 				success: true,
 				message: "User created successfully.",
@@ -165,6 +167,7 @@ const userController = {
 	},
 	async deleteUserProfile(request, response) {
 		try {
+			mailController.sendGoodbyeEmail(request.user.email, request.user.name);
 			await request.user.remove();
 			response.status(200).send({
 				success: true,
