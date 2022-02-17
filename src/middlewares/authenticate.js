@@ -8,7 +8,7 @@ async function authenticate(request, response, next) {
 	console.log(`Incoming ${request.method} request on path: ${request.path}`);
 	try {
 		const token = request.header("Authorization").split(" ")[1]; // get "bearer" token
-		const decoded = jwt.verify(token, "superSecretMessage"); // validate token with secret
+		const decoded = jwt.verify(token, process.env.JWT_SECRET); // validate token with secret
 		const user = await User.findOne({ _id: decoded._id, "tokens.token": token }); // looks for a valid token in users token array
 
 		if (!user) {
