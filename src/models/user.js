@@ -96,7 +96,7 @@ userSchema.pre("remove", async function (request, response, next) {
 // methods are available in your instances
 userSchema.methods.generateAuthToken = async function () { 
 	const user = this;
-	const token = jwt.sign({ _id: user._id.toString() }, "superSecretMessage"); // secet message for decoding
+	const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET); // secet message for decoding
 	user.tokens = user.tokens.concat({ token }); // add user's token to tokens array
 
 	await user.save();

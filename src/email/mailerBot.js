@@ -5,8 +5,8 @@ const mailerBot = nodemailer.createTransport({
 	port: 1025,
 	secure: false,
 	auth: {
-		user: process.env.SMTPAUTHUSER,
-		pass: process.env.SMTPAUTHPASS,
+		user: process.env.SMTP_AUTH_USER,
+		pass: process.env.SMTP_AUTH_PASS,
 	},
 	requireTLS: true,
 	tls: {
