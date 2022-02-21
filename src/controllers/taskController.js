@@ -17,7 +17,9 @@ const taskController = {
 			response.status(201).send({
 				success: true,
 				message: "Task created successfully.",
-				data: task,
+				data: {
+					task,
+				},
 			});
 		} catch (error) {
 			response.status(400).send({
@@ -55,7 +57,9 @@ const taskController = {
 			response.status(200).send({
 				success: true,
 				message: "Data retrieved successfully.",
-				data: request.user.tasks,
+				data: {
+					tasks: request.user.tasks,
+				},
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -80,7 +84,9 @@ const taskController = {
 			response.status(200).send({
 				success: true,
 				message: `Data retrieved successfully.`,
-				data: task,
+				data: {
+					task,
+				},
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -119,7 +125,9 @@ const taskController = {
 			response.status(200).send({
 				success: true,
 				message: `Task updated successfully.`,
-				data: task,
+				data: {
+					task,
+				},
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -144,7 +152,9 @@ const taskController = {
 			response.status(200).send({
 				success: true,
 				message: "Task deleted successfully.",
-				data: task,
+				data: {
+					task,
+				},
 			});
 		} catch (error) {
 			response.status(500).send({

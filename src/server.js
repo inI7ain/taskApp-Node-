@@ -9,7 +9,6 @@ import taskRouter from "./routers/taskRouter.js";
  */
 
 const server = express();
-const port = process.env.PORT;
 
 // Maintenance mode
 /* server.use((request, response, next) => { 

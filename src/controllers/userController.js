@@ -108,7 +108,9 @@ const userController = {
 			response.status(200).send({
 				success: true,
 				message: "Data retrieved successfully.",
-				data: users,
+				data: {
+					users,
+				},
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -129,7 +131,7 @@ const userController = {
 				new: true, // returns new updated data instead of original that was found
 				runValidators: true,
 			}
-		); */ // unfortunately this way mongoose and its middlewares gets bypassed
+		); */ // unfortunately this way mongoose and its middlewares get bypassed
 		try {
 			const updProps = Object.keys(request.body);
 			const modelProps = ["name", "email", "password", "age"];
@@ -156,7 +158,9 @@ const userController = {
 			response.status(200).send({
 				success: true,
 				message: `User updated successfully.`,
-				data: request.user,
+				data: {
+					user: request.user
+				},
 			});
 		} catch (error) {
 			response.status(500).send({
@@ -172,7 +176,9 @@ const userController = {
 			response.status(200).send({
 				success: true,
 				message: "User deleted successfully.",
-				data: request.user,
+				data: {
+					user: request.user
+				},
 			});
 		} catch (error) {
 			response.status(500).send({

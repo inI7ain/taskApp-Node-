@@ -93,7 +93,7 @@ userSchema.pre("remove", async function (request, response, next) {
 	next();
 });
 
-// methods are available in your instances
+// methods are available in instances
 userSchema.methods.generateAuthToken = async function () { 
 	const user = this;
 	const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET); // secet message for decoding
@@ -103,8 +103,9 @@ userSchema.methods.generateAuthToken = async function () {
 	return token;
 }
 
+// Override native toJSON
 userSchema.methods.toJSON = function () {
-	// hiding sensitive user data
+	// hiding sensitive user data when sending data
 	const user = this;
 	const publicUser = user.toObject();
 	delete publicUser.password;
@@ -112,7 +113,6 @@ userSchema.methods.toJSON = function () {
 	delete publicUser.avatar;
 	return { ...publicUser };
 }
-
 
 // static methods are available on the model
 userSchema.statics.findByCredentials = async function (email, password) {
