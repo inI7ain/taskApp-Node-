@@ -1,30 +1,14 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 
 const server = require("../src/server");
 const User = require("../src/models/user");
+const { userOneId, userOne, setupDb } = require("./fixtures/setup");
 
 // setup (for auth routes)
 
-const userOneId = new mongoose.Types.ObjectId();
-const userOne = {
-	_id: userOneId,
-	name: "Test",
-	email: "test@mail.com",
-	password: "abcD1234",
-	tokens: [
-		{
-			token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),
-		},
-	],
-};
+beforeEach(setupDb); // provided by supertest, runs before each case
 
-beforeEach(async () => {
-	// provided by supertest, runs before each case
-	await User.deleteMany(); // jest waits for results before proceeding with tests
-	await new User(userOne).save();
-});
 
 /* afterEach(() => {
 	console.log("afterEach");
@@ -101,6 +85,7 @@ test("Should get profile for user", async () => {
 		.expect(200)
 	);
 });
+
 
 test(
 	"Should not get profile for unathorized user",

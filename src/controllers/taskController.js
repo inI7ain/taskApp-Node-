@@ -29,7 +29,8 @@ const taskController = {
 		}
 	},
 	async readAllTasks(request, response) {
-		/*	Query string options 
+		/*	
+			Additional query string filter options 
 			/tasks/read?comleted=boolean
 			/tasks/read?limit=number
 			/tasks/read?skip=number

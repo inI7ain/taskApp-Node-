@@ -4,11 +4,6 @@ const multer = require("multer");
 const userController = require("../controllers/userController");
 const authenticate = require("../middlewares/authenticate");
 
-/* import express from "express";
-import multer from "multer";
-import userController from "../controllers/userController.js";
-import authenticate from "../middlewares/authenticate.js"; */
-
 const userRouter = new express.Router();
 const upload = multer({
 	// dest: "src/avatars", // specify upload directory (file is passed to next if omitted)
@@ -18,7 +13,7 @@ const upload = multer({
 	fileFilter(request, file, callback) {
 		if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
 			return callback(
-				"Only jpg, jpeg and png format is accepted."
+				"Only jpg, jpeg and png formats are accepted."
 			);
 		}
 		callback(undefined, true); // resolve

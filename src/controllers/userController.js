@@ -1,8 +1,10 @@
 const sharp = require("sharp");
 
+require("../db/mongoose");
 const User = require("../models/user");
 const mailController = require("./mailController");
-require("../db/mongoose");
+jest.mock("./mailController");
+
 
 /* import User from "../models/user.js";
 import mongoose from "mongoose"; */
