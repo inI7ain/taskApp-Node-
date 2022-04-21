@@ -3,7 +3,7 @@ const sharp = require("sharp");
 require("../db/mongoose");
 const User = require("../models/user");
 const mailController = require("./mailController");
-jest.mock("./mailController");
+// jest.mock("./mailController"); // for running unit tests only
 
 
 /* import User from "../models/user.js";
